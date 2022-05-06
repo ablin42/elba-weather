@@ -1,4 +1,5 @@
-const API_KEY = process.env.NEXT_PUBLIC_API_KEY;
+const API_KEY = "75895186feb9a9c7194be0c0eeef3615";
+// Wouldn't do this normally, figured it'd be easier if you wanted to run it out of the box
 
 export interface Coordinates {
   lat: number;
@@ -32,6 +33,7 @@ export interface Details {
   weather: Array<Weather>;
   main: Main;
   name: string;
+  sys: any;
 }
 
 export interface WeatherEntry {
@@ -118,12 +120,14 @@ export const generateWeatherEntry = ({ weather, label }: WeatherEntry) => {
   const { name } = weather;
   const { temp } = weather.main;
   const { main, icon } = weather.weather[0];
+  const { country } = weather.sys;
 
+  console.log(weather)
   return (
     <div>
       <h5 style={{ marginBottom: "-10px" }}>{label}</h5>
       <span style={{ fontSize: "18px" }}>
-        {name}, {temp} °C {main}
+        {name} ({country}), {temp} °C {main}
       </span>
       <img src={`http://openweathermap.org/img/wn/${icon}@2x.png`} />
     </div>
