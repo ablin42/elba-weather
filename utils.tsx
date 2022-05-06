@@ -1,3 +1,4 @@
+import styled from "styled-components";
 const API_KEY = process.env.NEXT_PUBLIC_API_KEY;
 
 export interface Coordinates {
@@ -12,6 +13,48 @@ export interface GeoCode {
   lat: number;
   lon: number;
 }
+
+export interface Main {
+  feels_like: number;
+  humidity: number;
+  pressure: number;
+  temp: number;
+  temp_max: number;
+  temp_min: number;
+}
+
+export interface Weather {
+  id: number;
+  main: string;
+  description: string;
+  icon: string;
+}
+export interface Details {
+  weather: Array<Weather>;
+  main: Main;
+  name: string;
+}
+
+export interface WeatherEntry {
+  weather: Details;
+  label: string;
+}
+
+const Wrapper = styled.div`
+  display: flex;
+  justify-content: center;
+`;
+
+const WeatherEntry = styled.div`
+  display: flex;
+  align-items: center;
+  margin: 5px 0;
+`;
+
+const WeatherText = styled.div`
+  text-align: left;
+  width: 225px;
+`;
 
 export const fetcher = async (query: string) => {
   try {
@@ -40,16 +83,20 @@ export const generateGeoCodesEntry = (
   addToFav: Function
 ) =>
   geoCodes.map((item, index) => (
-    <div key={item.name + index}>
-      {item.name} / {item.country} / {item.state}
-      <button
-        type="button"
-        className="btn btn-success"
-        onClick={() => addToFav(item)}
-      >
-        +
-      </button>
-    </div>
+    <Wrapper key={item.name + index}>
+      <WeatherEntry>
+        <WeatherText className="weather-text">
+          {item.country} / {item.name} / {item.state}
+        </WeatherText>
+        <button
+          type="button"
+          className="btn btn-success btn-action"
+          onClick={() => addToFav(item)}
+        >
+          +
+        </button>
+      </WeatherEntry>
+    </Wrapper>
   ));
 
 export const generateFavEntry = (
@@ -57,16 +104,21 @@ export const generateFavEntry = (
   removeFromFav: Function
 ) =>
   geoCodes.map((item, index) => (
-    <div key={item.name + index}>
-      {item.name} / {item.country} / {item.state}
-      <button
-        type="button"
-        className="btn btn-danger"
-        onClick={() => removeFromFav(item)}
-      >
-        -
-      </button>
-    </div>
+    <Wrapper key={item.name + index}>
+      <WeatherEntry>
+        <WeatherText className="weather-text">
+          {item.country} / {item.name} / {item.state}
+        </WeatherText>
+        <button
+          type="button"
+          className="btn btn-danger"
+          btn-action
+          onClick={() => removeFromFav(item)}
+        >
+          -
+        </button>
+      </WeatherEntry>
+    </Wrapper>
   ));
 
 export const getWeather = async ({ lat, lon }: Coordinates) => {
@@ -80,33 +132,42 @@ export const getWeather = async ({ lat, lon }: Coordinates) => {
   }
 };
 
-export const generateWeatherEntry = ({ weather, label }) => {
+export const generateWeatherEntry = ({ weather, label }: WeatherEntry) => {
   const { name } = weather;
   const { temp } = weather.main;
-  const { description, main, icon } = weather.weather[0];
+  const { main, icon } = weather.weather[0];
 
   return (
     <div>
       <h5>{label}</h5>
-      {weather.name} / {weather.main.temp} °C / {weather.weather[0].main}
-      <img
-        src={`http://openweathermap.org/img/wn/${weather.weather[0].icon}@2x.png`}
-      />
+      <span style={{ fontSize: "18px" }}>
+        {name}, {temp} °C {main}
+      </span>
+      <img src={`http://openweathermap.org/img/wn/${icon}@2x.png`} />
     </div>
   );
 };
 
-export const getExtremeWeather = ({ favDetails }) => {
+export const getExtremeWeather = ({ favDetails }: any) => {
   if (favDetails.length <= 0) return;
-  const sorted = favDetails.sort((a, b) => a.main.temp < b.main.temp);
+  const sorted = favDetails.sort((a: any, b: any) => a.main.temp < b.main.temp);
   const hottest = sorted[0];
   const coldest = sorted[sorted.length - 1];
 
-  console.log({ sorted, hottest, coldest });
   return (
     <>
-      {generateWeatherEntry({ weather: hottest, label: "Hottest" })}
-      {generateWeatherEntry({ weather: coldest, label: "Coldest" })}
+      <div className="col-6">
+        {generateWeatherEntry({
+          weather: hottest,
+          label: "Hottest Destination",
+        })}
+      </div>
+      <div className="col-6">
+        {generateWeatherEntry({
+          weather: coldest,
+          label: "Coldest Destination",
+        })}
+      </div>
     </>
   );
 };

@@ -11,19 +11,17 @@ import {
   generateFavEntry,
   getExtremeWeather,
 } from "../utils";
-const API_KEY = process.env.NEXT_PUBLIC_API_KEY;
 
-// { localWeather }
 const Home: NextPage = () => {
-  const [myWeather, setMyWeather] = useState();
+  const [myWeather, setMyWeather] = useState<any>();
   const [geoCodes, setGeoCodes] = useState<Array<GeoCode>>([]);
   const [fav, setFav] = useState<Array<GeoCode>>([]);
-  const [favDetails, setFavDetails] = useState<any>([]); //!
+  const [favDetails, setFavDetails] = useState<Array<any>>([]); 
 
-  // useEffect(() => {
-  //   console.log(myWeather)
-  //   if (!myWeather) getLocation();
-  // }, []);
+  useEffect(() => {
+    console.log(myWeather);
+    if (!myWeather) getLocation();
+  }, []);
 
   const getLocation = () => {
     if (navigator && navigator.geolocation) {
@@ -40,7 +38,7 @@ const Home: NextPage = () => {
     }
   };
 
-  const getFavDetails = async (favList) => {
+  const getFavDetails = async (favList: Array<any>) => {
     const list = [];
     for (const location of favList) list.push(await getWeather(location));
 
@@ -61,9 +59,8 @@ const Home: NextPage = () => {
     getFavDetails(newFav);
   };
 
-  console.log(favDetails);
   return (
-    <div className="container">
+    <div className="container main-container mt-5">
       <Head>
         <title>Very Cool Weather App</title>
         <meta
@@ -73,46 +70,54 @@ const Home: NextPage = () => {
         <link rel="icon" href="/favicon.ico" />
       </Head>
 
-      {myWeather &&
-        generateWeatherEntry({
-          weather: myWeather,
-          label: `Your location: ${myWeather.name}`,
-        })}
-      <input
-        type="text"
-        className="form-control"
-        onChange={async (e) => setGeoCodes(await getGeoCodes(e.target.value))}
-      />
-      {generateGeoCodesEntry(geoCodes, addToFav)}
+      <h1 className="mb-3">Live Weather</h1>
+      <div className="row">
+        {myWeather &&
+          generateWeatherEntry({
+            weather: myWeather,
+            label: `Your location: ${myWeather.name}`,
+          })}
+      </div>
 
-      <h3>my fav</h3>
-      {generateFavEntry(fav, removeFromFav)}
+      <div className="row col-8 offset-2">
+        {getExtremeWeather({ favDetails })}
+      </div>
 
-      <h3>extremes</h3>
-      {getExtremeWeather({ favDetails })}
+
+
+      <div className="input-group mb-5 search-input">
+        <span className="input-group-text" id="inputGroup-sizing-default">
+          Search a location
+        </span>
+        <input
+          type="text"
+          className="form-control"
+          onChange={async (e) => setGeoCodes(await getGeoCodes(e.target.value))}
+          placeholder="London"
+        />
+      </div>
+
+      <div className="row mt-3 col-8 offset-2">
+        {geoCodes.length > 0 && (
+          <div className="col-6">
+            <div>
+              <h3 className="mb-3">Add Destination</h3>
+              {generateGeoCodesEntry(geoCodes, addToFav)}
+            </div>
+          </div>
+        )}
+
+        {fav.length > 0 && (
+          <div className="col-6">
+            <div>
+              <h3 className="mb-3">Remove Destination</h3>
+              {generateFavEntry(fav, removeFromFav)}
+            </div>
+          </div>
+        )}
+      </div>
     </div>
   );
 };
-
-// export async function getServerSideProps() {
-//   // Fetch data from external API
-//   let myWeather = {lat: 0, lon: 0};
-//   if (navigator && navigator.geolocation) {
-//     navigator.geolocation.getCurrentPosition( position => {
-//       myWeather = {
-//         lat: position.coords.latitude,
-//         lon: position.coords.longitude,
-//       };
-//     })
-//   } else {
-//     console.error("Geolocation is not supported by this browser.");
-//   }
-
-//   const res = await fetch(`https://api.openweathermap.org/data/2.5/weather?lat=${myWeather.lat}&lon=${myWeather.lon}&appid=${API_KEY}`)
-//   const localWeather = await res.json()
-
-//   // Pass data to the page via props
-//   return { props: { localWeather } }
-// }
 
 export default Home;
