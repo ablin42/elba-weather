@@ -46,7 +46,7 @@ const Home: NextPage = () => {
   };
 
   const addToFav = (geoCode: GeoCode) => {
-    const newFav = [...fav, geoCode];
+    const newFav = [...new Set([...fav, geoCode])];
     setFav(newFav);
     getFavDetails(newFav);
   };
