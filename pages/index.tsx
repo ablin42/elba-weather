@@ -1,13 +1,27 @@
 import type { NextPage } from "next";
-import { useState } from "react";
+import { useState, useEffect } from "react";
 // import styled from "styled-components";
 import Head from "next/head";
-import { getWeather } from "../utils";
+import {
+  getWeather,
+  generateWeatherEntry,
+  getGeoCodes,
+  generateGeoCodesEntry,
+  GeoCode,
+  generateFavEntry,
+} from "../utils";
 const API_KEY = process.env.NEXT_PUBLIC_API_KEY;
 
 // { localWeather }
 const Home: NextPage = () => {
   const [myWeather, setMyWeather] = useState();
+  const [geoCodes, setGeoCodes] = useState<Array<GeoCode>>([]);
+  const [fav, setFav] = useState<Array<GeoCode>>([]);
+
+  // useEffect(() => {
+  //   console.log(myWeather)
+  //   if (!myWeather) getLocation();
+  // }, []);
 
   const getLocation = () => {
     if (navigator && navigator.geolocation) {
@@ -23,10 +37,15 @@ const Home: NextPage = () => {
       console.log("Geolocation is not supported by this browser.");
     }
   };
-  getLocation();
+
+  const addToFav = (geoCode: GeoCode) => setFav([...fav, geoCode]);
+  const removeFromFav = (geoCode: GeoCode) =>
+    setFav(
+      fav.filter((item) => item.lon !== geoCode.lon && item.lat !== geoCode.lat)
+    );
 
   return (
-    <div>
+    <div className="container">
       <Head>
         <title>Very Cool Weather App</title>
         <meta
@@ -35,7 +54,16 @@ const Home: NextPage = () => {
         />
         <link rel="icon" href="/favicon.ico" />
       </Head>
-      <h1>Hello world</h1>
+
+      {myWeather && generateWeatherEntry(myWeather)}
+      <input
+        type="text"
+        className="form-control"
+        onChange={async (e) => setGeoCodes(await getGeoCodes(e.target.value))}
+      />
+      {generateGeoCodesEntry(geoCodes, addToFav)}
+      <h3>my fav</h3>
+      {generateFavEntry(fav, removeFromFav)}
     </div>
   );
 };
