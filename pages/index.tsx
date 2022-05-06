@@ -94,7 +94,7 @@ const Home: NextPage = () => {
       </div>
 
       <div className="row mt-3 col-8 offset-2">
-        {geoCodes.length > 0 && (
+        {geoCodes?.length > 0 && (
           <div className="col-6">
             <div>
               <h4 className="mb-3">Add Destination</h4>
@@ -103,7 +103,7 @@ const Home: NextPage = () => {
           </div>
         )}
 
-        {fav.length > 0 && (
+        {fav?.length > 0 && (
           <div className="col-6">
             <div>
               <h3 className="mb-3">Remove Destination</h3>

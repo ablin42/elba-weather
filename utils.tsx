@@ -1,4 +1,3 @@
-import styled from "styled-components";
 const API_KEY = process.env.NEXT_PUBLIC_API_KEY;
 
 export interface Coordinates {
@@ -40,22 +39,6 @@ export interface WeatherEntry {
   label: string;
 }
 
-const Wrapper = styled.div`
-  display: flex;
-  justify-content: center;
-`;
-
-const WeatherEntry = styled.div`
-  display: flex;
-  align-items: center;
-  margin: 5px 0;
-`;
-
-const WeatherText = styled.div`
-  text-align: left;
-  width: 225px;
-`;
-
 export const fetcher = async (query: string) => {
   try {
     const res = await fetch(query);
@@ -83,11 +66,11 @@ export const generateGeoCodesEntry = (
   addToFav: Function
 ) =>
   geoCodes.map((item, index) => (
-    <Wrapper key={item.name + index}>
-      <WeatherEntry>
-        <WeatherText className="weather-text">
+    <div className="wrapper" key={item.name + index}>
+      <div className="weather-entry">
+        <div className="weather-text">
           {item.country} / {item.name} / {item.state}
-        </WeatherText>
+        </div>
         <button
           type="button"
           className="btn btn-success btn-action"
@@ -95,8 +78,8 @@ export const generateGeoCodesEntry = (
         >
           +
         </button>
-      </WeatherEntry>
-    </Wrapper>
+      </div>
+    </div>
   ));
 
 export const generateFavEntry = (
@@ -104,21 +87,20 @@ export const generateFavEntry = (
   removeFromFav: Function
 ) =>
   geoCodes.map((item, index) => (
-    <Wrapper key={item.name + index}>
-      <WeatherEntry>
-        <WeatherText className="weather-text">
+    <div className="wrapper" key={item.name + index}>
+      <div className="weather-entry">
+        <div className="weather-text">
           {item.country} / {item.name} / {item.state}
-        </WeatherText>
+        </div>
         <button
           type="button"
-          className="btn btn-danger"
-          btn-action
+          className="btn btn-danger btn-action"
           onClick={() => removeFromFav(item)}
         >
           -
         </button>
-      </WeatherEntry>
-    </Wrapper>
+      </div>
+    </div>
   ));
 
 export const getWeather = async ({ lat, lon }: Coordinates) => {

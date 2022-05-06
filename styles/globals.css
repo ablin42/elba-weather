@@ -18,13 +18,15 @@ div::-webkit-scrollbar-thumb {
 
 
 html,
-body {
+body,
+#__next {
   padding: 0;
   margin: 0;
   font-family: "Roboto", -apple-system, BlinkMacSystemFont, Segoe UI, Roboto, Oxygen,
     Ubuntu, Cantarell, Fira Sans, Droid Sans, Helvetica Neue, sans-serif;
   background-color: #161616;
   color: #E1E1E1;
+  height: 100vh;
 }
 
 a {
@@ -46,10 +48,26 @@ a {
 }
 
 .search-input {
-  width: 60%;
+  width: 60% !important;
   margin: auto;
 }
 
 h1, h2, h3, h4, h5, h6 {
   color: #14eb87;
+}
+
+.wrapper{
+  display: flex;
+  justify-content: center;
+}
+
+.weather-entry {
+  display: flex;
+  align-items: center;
+  margin: 5px 0;
+}
+
+.weather-text {
+  text-align: left;
+  width: 225px;
 }
