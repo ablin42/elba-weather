@@ -18,9 +18,8 @@ const Home: NextPage = () => {
   const [favDetails, setFavDetails] = useState<Array<any>>([]); 
 
   useEffect(() => {
-    console.log(myWeather);
     if (!myWeather) getLocation();
-  }, []);
+  });
 
   const getLocation = () => {
     if (navigator && navigator.geolocation) {
