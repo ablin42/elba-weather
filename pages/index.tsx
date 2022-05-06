@@ -101,7 +101,7 @@ const Home: NextPage = () => {
         {geoCodes.length > 0 && (
           <div className="col-6">
             <div>
-              <h3 className="mb-3">Add Destination</h3>
+              <h4 className="mb-3">Add Destination</h4>
               {generateGeoCodesEntry(geoCodes, addToFav)}
             </div>
           </div>
