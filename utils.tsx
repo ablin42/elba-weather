@@ -72,7 +72,7 @@ export const generateFavEntry = (
 export const getWeather = async ({ lat, lon }: Coordinates) => {
   try {
     const data = await fetcher(
-      `https://api.openweathermap.org/data/2.5/weather?lat=${lat}&lon=${lon}&appid=${API_KEY}`
+      `https://api.openweathermap.org/data/2.5/weather?lat=${lat}&lon=${lon}&appid=${API_KEY}&units=metric`
     );
     return data;
   } catch (err) {
@@ -80,18 +80,33 @@ export const getWeather = async ({ lat, lon }: Coordinates) => {
   }
 };
 
-export const generateWeatherEntry = (weather) => {
+export const generateWeatherEntry = ({ weather, label }) => {
   const { name } = weather;
   const { temp } = weather.main;
   const { description, main, icon } = weather.weather[0];
 
   return (
     <div>
-      {weather.name} / {weather.main.temp} / {weather.weather[0].description} /{" "}
-      {weather.weather[0].main}
+      <h5>{label}</h5>
+      {weather.name} / {weather.main.temp} °C / {weather.weather[0].main}
       <img
         src={`http://openweathermap.org/img/wn/${weather.weather[0].icon}@2x.png`}
       />
     </div>
+  );
+};
+
+export const getExtremeWeather = ({ favDetails }) => {
+  if (favDetails.length <= 0) return;
+  const sorted = favDetails.sort((a, b) => a.main.temp < b.main.temp);
+  const hottest = sorted[0];
+  const coldest = sorted[sorted.length - 1];
+
+  console.log({ sorted, hottest, coldest });
+  return (
+    <>
+      {generateWeatherEntry({ weather: hottest, label: "Hottest" })}
+      {generateWeatherEntry({ weather: coldest, label: "Coldest" })}
+    </>
   );
 };

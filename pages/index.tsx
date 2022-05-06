@@ -9,6 +9,7 @@ import {
   generateGeoCodesEntry,
   GeoCode,
   generateFavEntry,
+  getExtremeWeather,
 } from "../utils";
 const API_KEY = process.env.NEXT_PUBLIC_API_KEY;
 
@@ -17,6 +18,7 @@ const Home: NextPage = () => {
   const [myWeather, setMyWeather] = useState();
   const [geoCodes, setGeoCodes] = useState<Array<GeoCode>>([]);
   const [fav, setFav] = useState<Array<GeoCode>>([]);
+  const [favDetails, setFavDetails] = useState<any>([]); //!
 
   // useEffect(() => {
   //   console.log(myWeather)
@@ -38,12 +40,28 @@ const Home: NextPage = () => {
     }
   };
 
-  const addToFav = (geoCode: GeoCode) => setFav([...fav, geoCode]);
-  const removeFromFav = (geoCode: GeoCode) =>
-    setFav(
-      fav.filter((item) => item.lon !== geoCode.lon && item.lat !== geoCode.lat)
-    );
+  const getFavDetails = async (favList) => {
+    const list = [];
+    for (const location of favList) list.push(await getWeather(location));
 
+    setFavDetails(list);
+  };
+
+  const addToFav = (geoCode: GeoCode) => {
+    const newFav = [...fav, geoCode];
+    setFav(newFav);
+    getFavDetails(newFav);
+  };
+
+  const removeFromFav = (geoCode: GeoCode) => {
+    const newFav = fav.filter(
+      (item) => item.lon !== geoCode.lon && item.lat !== geoCode.lat
+    );
+    setFav(newFav);
+    getFavDetails(newFav);
+  };
+
+  console.log(favDetails);
   return (
     <div className="container">
       <Head>
@@ -55,15 +73,23 @@ const Home: NextPage = () => {
         <link rel="icon" href="/favicon.ico" />
       </Head>
 
-      {myWeather && generateWeatherEntry(myWeather)}
+      {myWeather &&
+        generateWeatherEntry({
+          weather: myWeather,
+          label: `Your location: ${myWeather.name}`,
+        })}
       <input
         type="text"
         className="form-control"
         onChange={async (e) => setGeoCodes(await getGeoCodes(e.target.value))}
       />
       {generateGeoCodesEntry(geoCodes, addToFav)}
+
       <h3>my fav</h3>
       {generateFavEntry(fav, removeFromFav)}
+
+      <h3>extremes</h3>
+      {getExtremeWeather({ favDetails })}
     </div>
   );
 };
