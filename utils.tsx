@@ -54,7 +54,7 @@ export const getGeoCodes = async (search: string) => {
   try {
     if (search.length <= 0) return;
     const data = await fetcher(
-      `http://api.openweathermap.org/geo/1.0/direct?q=${search}&limit=${10}&appid=${API_KEY}`
+      `https://api.openweathermap.org/geo/1.0/direct?q=${search}&limit=${10}&appid=${API_KEY}`
     );
 
     return data;
@@ -129,7 +129,7 @@ export const generateWeatherEntry = ({ weather, label }: WeatherEntry) => {
       <span style={{ fontSize: "18px" }}>
         {name} ({country}), {temp} °C {main}
       </span>
-      <img src={`http://openweathermap.org/img/wn/${icon}@2x.png`} />
+      <img src={`https://openweathermap.org/img/wn/${icon}@2x.png`} />
     </div>
   );
 };
