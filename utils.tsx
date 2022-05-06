@@ -139,7 +139,7 @@ export const generateWeatherEntry = ({ weather, label }: WeatherEntry) => {
 
   return (
     <div>
-      <h5>{label}</h5>
+      <h5 style={{ marginBottom: "-10px" }}>{label}</h5>
       <span style={{ fontSize: "18px" }}>
         {name}, {temp} °C {main}
       </span>

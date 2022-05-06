@@ -1,6 +1,5 @@
 import type { NextPage } from "next";
 import { useState, useEffect } from "react";
-// import styled from "styled-components";
 import Head from "next/head";
 import {
   getWeather,
@@ -83,9 +82,7 @@ const Home: NextPage = () => {
         {getExtremeWeather({ favDetails })}
       </div>
 
-
-
-      <div className="input-group mb-5 search-input">
+      <div className="input-group mb-4 search-input">
         <span className="input-group-text" id="inputGroup-sizing-default">
           Search a location
         </span>
